@@ -8,9 +8,8 @@ Android系统并没有提供截屏通知相关的API，需要我们自己对Andr
 
 
 ## 第一步：定义监听对象，确定触发监听条件
+    直接上代码说
 
->直接上代码说
-``` 
 ```
 final ContentObserver contentObserver = new ContentObserver(null) {
         @Override

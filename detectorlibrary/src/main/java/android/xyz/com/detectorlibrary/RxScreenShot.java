@@ -68,7 +68,6 @@ public class RxScreenShot {
                         Log.d(TAG, "path: " + path + ", dateAdded: " + dateAdded +
                                 ", currentTime: " + currentTime);
                         if (matchPath(path) && matchTime(currentTime, dateAdded)) {
-//                            emitter.onNext(path);
                             if(mOnChangeListener!=null){
                                 mOnChangeListener.onChange(path);
                             }
@@ -114,11 +113,11 @@ public class RxScreenShot {
 
 
     public void setOnChangeListener(OnChangeListener listener){
-        mContentResolver.registerContentObserver(
+        mContentResolver.registerContentObserver(//注册监听对象，作为被观察者
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver);
         mOnChangeListener = listener;
     }
-    public void cancelListener(){
+    public void cancelListener(){//注销监听对象
         mContentResolver.unregisterContentObserver(contentObserver);
         mOnChangeListener = null;
     }
@@ -152,6 +151,13 @@ public class RxScreenShot {
 //                            Log.d(TAG, "subscriber.add:MainThreadSubscription call");
 //                        }
 //                    });
+                    setOnChangeListener(new OnChangeListener() {
+                        @Override
+                        public void onChange(String path) {//
+                            Log.d(TAG, "onNext: call");
+                            subscriber.onNext(path);
+                        }
+                    });
                     subscriber.add(Subscriptions.create(new Action0() {
                         @Override
                         public void call() {
@@ -159,13 +165,7 @@ public class RxScreenShot {
                             Log.d(TAG, "subscriber.add: Action0 call");
                         }
                     }));
-                    setOnChangeListener(new OnChangeListener() {
-                        @Override
-                        public void onChange(String path) {
-                            Log.d(TAG, "onNext: call");
-                            subscriber.onNext(path);
-                        }
-                    });
+
 
                 }
             } catch (Exception e) {
